@@ -18,6 +18,20 @@ class DataService {
       return this.cache.get(cacheKey) as TelemetryData[];
     }
 
+    // Check for custom uploaded data first
+    const customData = localStorage.getItem('custom_telemetry_data');
+    if (customData) {
+      try {
+        const parsed = JSON.parse(customData);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          this.cache.set(cacheKey, parsed);
+          return parsed;
+        }
+      } catch (error) {
+        console.error('Error parsing custom telemetry data:', error);
+      }
+    }
+
     let url: string;
     switch (deviceId) {
       case 'truck_01':

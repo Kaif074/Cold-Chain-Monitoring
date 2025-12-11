@@ -2,6 +2,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Tracking from './pages/Tracking';
 import DeviceDetail from './pages/DeviceDetail';
+import DataUpload from './pages/DataUpload';
 import type { ReactNode } from 'react';
 
 interface RouteConfig {
@@ -28,6 +29,12 @@ const routes: RouteConfig[] = [
     name: 'Live Tracking',
     path: '/tracking',
     element: <Tracking />,
+    visible: true
+  },
+  {
+    name: 'Data Upload',
+    path: '/data-upload',
+    element: <DataUpload />,
     visible: true
   },
   {
