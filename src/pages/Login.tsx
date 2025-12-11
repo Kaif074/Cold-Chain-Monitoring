@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Thermometer } from 'lucide-react';
 import { toast } from 'sonner';
+import { dataService } from '@/services/dataService';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,6 +26,13 @@ export default function Login() {
     
     setTimeout(() => {
       localStorage.setItem('coldchain_auth', 'true');
+      const existing = localStorage.getItem('custom_telemetry_data');
+      if (!existing) {
+        try {
+          const sample = dataService.generateSampleTelemetry(120);
+          dataService.saveCustomTelemetry(sample);
+        } catch {}
+      }
       toast.success('Login successful');
       navigate('/dashboard');
       setIsLoading(false);

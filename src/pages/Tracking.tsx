@@ -26,6 +26,10 @@ export default function Tracking() {
       try {
         const data = await dataService.fetchTelemetry('truck_01');
         setTelemetryData(data);
+        setCurrentIndex(0);
+        if (data.length > 0) {
+          setIsPlaying(true);
+        }
       } catch (error) {
         console.error('Error fetching tracking data:', error);
       } finally {
@@ -34,6 +38,20 @@ export default function Tracking() {
     };
 
     fetchData();
+
+    const handleUpdate = () => {
+      try { dataService.clearCache(); } catch {}
+      setIsPlaying(false);
+      fetchData();
+    };
+
+    window.addEventListener('custom-data-updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+
+    return () => {
+      window.removeEventListener('custom-data-updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
   }, []);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Upload, Plus, Trash2, Download, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
+import { dataService } from '@/services/dataService';
 
 interface TelemetryRecord {
   timestamp: string;
@@ -31,6 +32,47 @@ const DataUpload = () => {
   });
 
   const [jsonInput, setJsonInput] = useState('');
+
+  const handleGenerateSampleRoute = () => {
+    const start = { lat: 28.6139, lng: 77.2090 };
+    const end = { lat: 26.9124, lng: 75.7873 };
+    const points = 120;
+    const deviceId = 'truck_01';
+
+    const records: TelemetryRecord[] = Array.from({ length: points }, (_, i) => {
+      const t = i / (points - 1);
+      const lat = start.lat + (end.lat - start.lat) * t;
+      const lng = start.lng + (end.lng - start.lng) * t;
+      const tempBase = 5;
+      const temp = tempBase + Math.sin(i / 10) * 1.5 + (Math.random() - 0.5) * 0.8;
+      const humBase = 68;
+      const humidity = humBase + Math.sin(i / 12) * 6 + (Math.random() - 0.5) * 3;
+      const presBase = 101.3;
+      const pressure = presBase + Math.sin(i / 15) * 0.6 + (Math.random() - 0.5) * 0.3;
+      const speed = Math.max(0, 30 + Math.sin(i / 8) * 20 + (Math.random() - 0.5) * 10);
+      const course = 210;
+      const door = i % 35 === 0 ? 'open' : 'closed';
+      const timestamp = new Date(Date.now() - (points - i) * 60_000).toISOString();
+      return {
+        timestamp,
+        device_id: deviceId,
+        latitude: Number(lat.toFixed(6)),
+        longitude: Number(lng.toFixed(6)),
+        temperature: Number(temp.toFixed(2)),
+        humidity: Number(humidity.toFixed(2)),
+        pressure: Number(pressure.toFixed(2)),
+        speed: Number(speed.toFixed(2)),
+        course_deg: course,
+        door_status: door,
+      };
+    });
+
+    setTelemetryRecords(records);
+    localStorage.setItem('custom_telemetry_data', JSON.stringify(records));
+    try { dataService.clearCache(); } catch {}
+    window.dispatchEvent(new Event('custom-data-updated'));
+    toast.success(`Generated ${records.length} sample records`);
+  };
 
   const handleAddRecord = () => {
     if (!currentRecord.latitude || !currentRecord.longitude || 
@@ -87,6 +129,11 @@ const DataUpload = () => {
       const parsed = JSON.parse(jsonInput);
       if (Array.isArray(parsed)) {
         setTelemetryRecords(parsed);
+        localStorage.setItem('custom_telemetry_data', JSON.stringify(parsed));
+        try {
+          dataService.clearCache();
+        } catch {}
+        window.dispatchEvent(new Event('custom-data-updated'));
         toast.success(`Imported ${parsed.length} records`);
         setJsonInput('');
       } else {
@@ -100,6 +147,10 @@ const DataUpload = () => {
   const handleSaveToLocalStorage = () => {
     localStorage.setItem('custom_telemetry_data', JSON.stringify(telemetryRecords));
     toast.success('Data saved to browser storage');
+    try {
+      dataService.clearCache();
+    } catch {}
+    window.dispatchEvent(new Event('custom-data-updated'));
   };
 
   const handleLoadFromLocalStorage = () => {
@@ -109,6 +160,10 @@ const DataUpload = () => {
         const parsed = JSON.parse(saved);
         setTelemetryRecords(parsed);
         toast.success(`Loaded ${parsed.length} records`);
+        try {
+          dataService.clearCache();
+        } catch {}
+        window.dispatchEvent(new Event('custom-data-updated'));
       } catch (error) {
         toast.error('Failed to load saved data');
       }
@@ -128,6 +183,10 @@ const DataUpload = () => {
           <Button variant="outline" onClick={handleLoadFromLocalStorage}>
             <Upload className="h-4 w-4 mr-2" />
             Load Saved
+          </Button>
+          <Button variant="outline" onClick={handleGenerateSampleRoute}>
+            <Plus className="h-4 w-4 mr-2" />
+            Generate Sample Route
           </Button>
           <Button variant="outline" onClick={handleSaveToLocalStorage} disabled={telemetryRecords.length === 0}>
             <Download className="h-4 w-4 mr-2" />

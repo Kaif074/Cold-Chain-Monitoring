@@ -25,7 +25,6 @@ export default function Dashboard() {
           dataService.fetchTelemetry('truck_01'),
           dataService.fetchAlerts(),
         ]);
-        
         setTelemetryData(truck01Data);
         setAlerts(alertsData.slice(0, 5));
       } catch (error) {
@@ -36,6 +35,19 @@ export default function Dashboard() {
     };
 
     fetchData();
+
+    const handleUpdate = () => {
+      try { dataService.clearCache(); } catch {}
+      fetchData();
+    };
+
+    window.addEventListener('custom-data-updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+
+    return () => {
+      window.removeEventListener('custom-data-updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
   }, []);
 
   const latestData = dataService.getLatestTelemetry(telemetryData);
