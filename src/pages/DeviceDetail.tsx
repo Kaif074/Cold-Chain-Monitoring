@@ -18,6 +18,11 @@ export default function DeviceDetail() {
   const [telemetryData, setTelemetryData] = useState<TelemetryData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Helper function to safely get numeric values
+  const safeNumber = (value: number | undefined | null): number => {
+    return typeof value === 'number' && !isNaN(value) ? value : 0;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!deviceId) return;
@@ -165,7 +170,7 @@ export default function DeviceDetail() {
                         className="p-4 border border-border rounded-lg cursor-pointer hover:bg-accent/50"
                       >
                         <summary className="font-medium">
-                          {format(new Date(item.timestamp), 'PPp')} - Temp: {(item.temperature ?? 0).toFixed(1)}°C
+                          {format(new Date(item.timestamp), 'PPp')} - Temp: {safeNumber(item.temperature).toFixed(1)}°C
                         </summary>
                         <pre className="mt-2 text-xs overflow-x-auto">
                           {JSON.stringify(item, null, 2)}

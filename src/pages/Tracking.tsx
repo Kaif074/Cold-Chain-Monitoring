@@ -15,6 +15,11 @@ export default function Tracking() {
   const [isLoading, setIsLoading] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Helper function to safely get numeric values
+  const safeNumber = (value: number | undefined | null): number => {
+    return typeof value === 'number' && !isNaN(value) ? value : 0;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -137,28 +142,28 @@ export default function Tracking() {
                         <Thermometer className="h-4 w-4 text-success" />
                         <span className="text-sm text-muted-foreground">Temperature</span>
                       </div>
-                      <span className="font-semibold">{(currentData.temperature ?? 0).toFixed(1)}°C</span>
+                      <span className="font-semibold">{safeNumber(currentData.temperature).toFixed(1)}°C</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Droplets className="h-4 w-4 text-chart-2" />
                         <span className="text-sm text-muted-foreground">Humidity</span>
                       </div>
-                      <span className="font-semibold">{(currentData.humidity ?? 0).toFixed(1)}%</span>
+                      <span className="font-semibold">{safeNumber(currentData.humidity).toFixed(1)}%</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Gauge className="h-4 w-4 text-chart-3" />
                         <span className="text-sm text-muted-foreground">Pressure</span>
                       </div>
-                      <span className="font-semibold">{(currentData.pressure ?? 0).toFixed(1)} kPa</span>
+                      <span className="font-semibold">{safeNumber(currentData.pressure).toFixed(1)} kPa</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Truck className="h-4 w-4 text-primary" />
                         <span className="text-sm text-muted-foreground">Speed</span>
                       </div>
-                      <span className="font-semibold">{(currentData.speed ?? 0).toFixed(0)} km/h</span>
+                      <span className="font-semibold">{safeNumber(currentData.speed).toFixed(0)} km/h</span>
                     </div>
                   </>
                 )}
