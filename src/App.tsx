@@ -1,60 +1,66 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import { ThemeProvider } from 'next-themes';
+import Header from '@/components/common/Header';
 import routes from './routes';
 
-// Uncomment these imports when using miaoda-auth-react for authentication
-// import { AuthProvider, RequireAuth } from 'miaoda-auth-react';
-// import { supabase } from 'supabase-js';
-// import Header from '@/components/common/Header';
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthenticated = localStorage.getItem('coldchain_auth') === 'true';
 
-const App: React.FC = () => {
-{/*
-    // USING MIAODA-AUTH-REACT (Uncomment when auth is required):
-    // =========================================================
-    // Replace the current App structure with this when using miaoda-auth-react:
+  useEffect(() => {
+    if (!isAuthenticated && location.pathname !== '/login') {
+      navigate('/login', { replace: true });
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
 
-    // 1. Wrap everything with AuthProvider (must be inside Router)
-    // 2. Use RequireAuth to protect routes that need authentication
-    // 3. Set whiteList prop for public routes that don't require auth
+  if (!isAuthenticated && location.pathname !== '/login') {
+    return null;
+  }
 
-    // Example structure:
-    // <Router>
-    //   <AuthProvider client={supabase}>
-    //     <ScrollToTop />
-    //     <Toaster />
-    //     <RequireAuth whiteList={["/login", "/403", "/404", "/public/*"]}>
-    //       <Header />
-    //       <Routes>
-    //         ... your routes here ...
-    //       </Routes>
-    //     </RequireAuth>
-    //   </AuthProvider>
-    // </Router>
+  return <>{children}</>;
+}
 
-    // IMPORTANT:
-    // - AuthProvider must be INSIDE Router (it uses useNavigate)
-    // - RequireAuth should wrap Routes, not be inside it
-    // - Add all public paths to the whiteList array
-    // - Remove the custom PrivateRoute component when using RequireAuth
-*/}
+function AppContent() {
+  const location = useLocation();
+  const showHeader = location.pathname !== '/login';
+
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen">
-        <main className="flex-grow">
-          <Routes>
+    <div className="flex flex-col min-h-screen">
+      {showHeader && <Header />}
+      <main className="flex-grow">
+        <Routes>
           {routes.map((route, index) => (
             <Route
               key={index}
               path={route.path}
-              element={route.element}
+              element={
+                route.path === '/login' ? (
+                  route.element
+                ) : (
+                  <ProtectedRoute>{route.element}</ProtectedRoute>
+                )
+              }
             />
           ))}
-          <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
+
+const App: React.FC = () => {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <Router>
+        <AppContent />
+        <Toaster position="top-right" richColors />
+      </Router>
+    </ThemeProvider>
   );
 };
 
