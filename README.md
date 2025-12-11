@@ -1,4 +1,54 @@
-# Welcome to Your Miaoda Project
+# Cold-Chain Monitoring Dashboard
+
+A fully functional demo dashboard showcasing a cold-chain solution with real-time monitoring capabilities, GPS tracking, and interactive maps.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js ≥ 20
+- npm ≥ 10
+- Google Maps API Key (for map features)
+
+### Installation
+
+1. **Clone or download the project**
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Google Maps API Key**
+   
+   Create a `.env` file in the root directory (or copy from `.env.example`):
+   ```env
+   VITE_APP_ID=app-85j7ce9c8ikh
+   VITE_GOOGLE_MAPS_API_KEY=your_actual_api_key_here
+   ```
+   
+   **📖 Need help getting an API key?** See [GOOGLE_MAPS_SETUP.md](./GOOGLE_MAPS_SETUP.md) for detailed instructions.
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   Navigate to `http://localhost:5173`
+
+## 🗺️ Google Maps Setup (Required for Tracking Page)
+
+The tracking page requires a Google Maps API key to display the interactive map with truck locations and routes.
+
+### Quick Setup:
+1. Go to [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
+2. Enable "Maps JavaScript API"
+3. Create an API key
+4. Add it to your `.env` file
+
+**For detailed step-by-step instructions, see [GOOGLE_MAPS_SETUP.md](./GOOGLE_MAPS_SETUP.md)**
+
+### Default Location
+The map is configured for **India** with New Delhi as the default center (28.6139°N, 77.2090°E).
 
 ## Project Info
 

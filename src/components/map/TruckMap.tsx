@@ -3,9 +3,11 @@ import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps';
 import type { TelemetryData } from '@/types';
 import { Card } from '@/components/ui/card';
 
-// NOTE: Replace this with your actual Google Maps API key
-// Get your API key from: https://console.cloud.google.com/google/maps-apis
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBvqPqxqPqxqPqxqPqxqPqxqPqxqPqxqPq';
+// Get Google Maps API key from environment variable
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+
+// Default center for India (New Delhi coordinates)
+const DEFAULT_CENTER = { lat: 28.6139, lng: 77.2090 };
 
 interface TruckMapProps {
   telemetryData: TelemetryData[];
@@ -104,7 +106,7 @@ function MapContent({ telemetryData, currentIndex, showTrail = true }: TruckMapP
 }
 
 export default function TruckMap({ telemetryData, currentIndex, showTrail }: TruckMapProps) {
-  const [center, setCenter] = useState({ lat: 0, lng: 0 });
+  const [center, setCenter] = useState(DEFAULT_CENTER);
 
   useEffect(() => {
     if (telemetryData.length > 0) {
@@ -112,6 +114,37 @@ export default function TruckMap({ telemetryData, currentIndex, showTrail }: Tru
       setCenter({ lat: firstPoint.latitude, lng: firstPoint.longitude });
     }
   }, [telemetryData]);
+
+  // Check if API key is configured
+  if (!GOOGLE_MAPS_API_KEY || GOOGLE_MAPS_API_KEY === 'YOUR_GOOGLE_MAPS_API_KEY_HERE') {
+    return (
+      <Card className="w-full h-full flex items-center justify-center p-8">
+        <div className="text-center space-y-4 max-w-2xl">
+          <h3 className="text-xl font-semibold text-destructive">Google Maps API Key Required</h3>
+          <p className="text-muted-foreground">
+            To display the map, you need to configure a Google Maps API key.
+          </p>
+          <div className="bg-muted p-4 rounded-lg text-left space-y-2">
+            <p className="font-semibold">Setup Instructions:</p>
+            <ol className="list-decimal list-inside space-y-1 text-sm">
+              <li>Go to <a href="https://console.cloud.google.com/google/maps-apis" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Cloud Console</a></li>
+              <li>Create a new project or select an existing one</li>
+              <li>Enable the "Maps JavaScript API"</li>
+              <li>Create credentials (API Key)</li>
+              <li>Copy your API key</li>
+              <li>Add it to your <code className="bg-background px-1 py-0.5 rounded">.env</code> file:</li>
+            </ol>
+            <pre className="bg-background p-2 rounded text-xs overflow-x-auto">
+              VITE_GOOGLE_MAPS_API_KEY=your_actual_api_key_here
+            </pre>
+            <p className="text-xs text-muted-foreground mt-2">
+              Note: Restart the development server after updating the .env file
+            </p>
+          </div>
+        </div>
+      </Card>
+    );
+  }
 
   if (telemetryData.length === 0) {
     return (

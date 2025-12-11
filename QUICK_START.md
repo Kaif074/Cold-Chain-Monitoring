@@ -10,17 +10,21 @@
 4. Create credentials (API Key)
 5. Copy your API key
 
-### Step 2: Add Your Google Maps API Key
+**📖 For detailed instructions, see [GOOGLE_MAPS_SETUP.md](./GOOGLE_MAPS_SETUP.md)**
 
-Open `src/components/map/TruckMap.tsx` and replace line 8:
+### Step 2: Configure Your Environment
 
-```typescript
-// Replace this line:
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBvqPqxqPqxqPqxqPqxqPqxqPqxqPqxqPq';
+Create or edit the `.env` file in the root directory:
 
-// With your actual key:
-const GOOGLE_MAPS_API_KEY = 'YOUR_ACTUAL_GOOGLE_MAPS_API_KEY';
+```env
+VITE_APP_ID=app-85j7ce9c8ikh
+VITE_GOOGLE_MAPS_API_KEY=your_actual_api_key_here
 ```
+
+**Important**: 
+- Replace `your_actual_api_key_here` with your actual Google Maps API key
+- Restart the development server after updating the `.env` file
+- Never commit your `.env` file to version control
 
 ### Step 3: Add Your Own Route Data
 
@@ -153,6 +157,11 @@ Open browser to: http://127.0.0.1:5173
 
 ## 📍 How to Get Coordinates for Your Route
 
+### Default Location: India
+The map is configured with **New Delhi, India** as the default center:
+- Latitude: 28.6139
+- Longitude: 77.2090
+
 ### Method 1: Google Maps
 
 1. Go to https://maps.google.com
@@ -167,9 +176,41 @@ You can use online geocoding services to convert addresses to coordinates:
 - https://www.latlong.net
 - https://www.gps-coordinates.net
 
-## 🎯 Example: Creating a Simple Route
+## 🎯 Example Routes
 
-Let's create a route from New York to Boston:
+### Example 1: India Route (Delhi to Mumbai)
+
+Let's create a route from Delhi to Mumbai:
+
+#### 1. Get Coordinates
+
+- New Delhi: 28.6139, 77.2090
+- Jaipur (waypoint): 26.9124, 75.7873
+- Ahmedabad (waypoint): 23.0225, 72.5714
+- Mumbai: 19.0760, 72.8777
+
+#### 2. Edit the Generator
+
+```javascript
+route: [
+  { lat: 28.6139, lng: 77.2090, name: 'New Delhi' },
+  { lat: 26.9124, lng: 75.7873, name: 'Jaipur' },
+  { lat: 23.0225, lng: 72.5714, name: 'Ahmedabad' },
+  { lat: 19.0760, lng: 72.8777, name: 'Mumbai' },
+]
+```
+
+#### 3. Generate Data
+
+```bash
+node scripts/generate-sample-data.js > my-route-data.txt
+```
+
+#### 4. Use the Data
+
+Copy the generated JSON from `my-route-data.txt` and upload to Pastebin or save locally.
+
+### Example 2: US Route (New York to Boston)
 
 ### 1. Get Coordinates
 
