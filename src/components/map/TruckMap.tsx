@@ -56,8 +56,9 @@ function MapContent({ telemetryData, currentIndex, showTrail = true }: TruckMapP
   if (!currentData) return null;
 
   const getMarkerColor = () => {
-    if (currentData.door_open) return '#EAB308';
-    if (currentData.temperature_c < 2 || currentData.temperature_c > 8) return '#EF4444';
+    if (currentData.door_status === 'open') return '#EAB308';
+    const temp = currentData.temperature ?? 0;
+    if (temp < 2 || temp > 8) return '#EF4444';
     return '#22C55E';
   };
 
@@ -78,8 +79,9 @@ function MapContent({ telemetryData, currentIndex, showTrail = true }: TruckMapP
         icon={markerIcon}
       />
       {telemetryData.slice(0, currentIndex + 1).map((item, idx) => {
-        if (item.door_open || item.temperature_c < 2 || item.temperature_c > 8) {
-          const eventColor = item.door_open ? '#EAB308' : '#EF4444';
+        const temp = item.temperature ?? 0;
+        if (item.door_status === 'open' || temp < 2 || temp > 8) {
+          const eventColor = item.door_status === 'open' ? '#EAB308' : '#EF4444';
           return (
             <Marker
               key={`event-${idx}`}

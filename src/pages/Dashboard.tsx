@@ -93,38 +93,38 @@ export default function Dashboard() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <MetricCard
               title="Temperature"
-              value={latestData.temperature_c.toFixed(1)}
+              value={(latestData.temperature ?? 0).toFixed(1)}
               unit="°C"
               icon={Thermometer}
-              status={getTemperatureStatus(latestData.temperature_c)}
+              status={getTemperatureStatus(latestData.temperature ?? 0)}
               subtitle="Target: 2-8°C"
             />
             <MetricCard
               title="Humidity"
-              value={latestData.humidity_percent.toFixed(1)}
+              value={(latestData.humidity ?? 0).toFixed(1)}
               unit="%"
               icon={Droplets}
               status="normal"
             />
             <MetricCard
               title="Pressure"
-              value={latestData.pressure_kpa.toFixed(1)}
+              value={(latestData.pressure ?? 0).toFixed(1)}
               unit="kPa"
               icon={Gauge}
               status="normal"
             />
             <MetricCard
               title="Speed"
-              value={latestData.speed_kmh.toFixed(0)}
+              value={(latestData.speed ?? 0).toFixed(0)}
               unit="km/h"
               icon={Truck}
               status="normal"
             />
             <MetricCard
               title="Door Status"
-              value={latestData.door_open ? 'Open' : 'Closed'}
+              value={latestData.door_status === 'open' ? 'Open' : 'Closed'}
               icon={DoorOpen}
-              status={latestData.door_open ? 'warning' : 'normal'}
+              status={latestData.door_status === 'open' ? 'warning' : 'normal'}
             />
             <MetricCard
               title="Idle Time"

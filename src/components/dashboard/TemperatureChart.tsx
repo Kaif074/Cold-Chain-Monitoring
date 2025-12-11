@@ -11,7 +11,7 @@ interface TemperatureChartProps {
 export default function TemperatureChart({ data, title = 'Temperature (24h)' }: TemperatureChartProps) {
   const chartData = data.map(item => ({
     time: format(new Date(item.timestamp), 'HH:mm'),
-    temperature: item.temperature_c,
+    temperature: item.temperature,
     timestamp: item.timestamp,
   }));
 

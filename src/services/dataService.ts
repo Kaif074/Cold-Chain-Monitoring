@@ -106,7 +106,7 @@ class DataService {
       const current = telemetryData[i];
       const previous = telemetryData[i - 1];
       
-      if (current.speed_kmh === 0 && previous.speed_kmh === 0) {
+      if ((current.speed ?? 0) === 0 && (previous.speed ?? 0) === 0) {
         const currentTime = new Date(current.timestamp).getTime();
         const previousTime = new Date(previous.timestamp).getTime();
         const diffMinutes = (currentTime - previousTime) / (1000 * 60);
@@ -124,10 +124,10 @@ class DataService {
       const current = telemetryData[i];
       const previous = telemetryData[i - 1];
       
-      if (current.door_open !== previous.door_open) {
+      if (current.door_status !== previous.door_status) {
         events.push({
           timestamp: current.timestamp,
-          status: current.door_open ? 'opened' : 'closed',
+          status: current.door_status,
         });
       }
     }

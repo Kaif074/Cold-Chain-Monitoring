@@ -11,7 +11,7 @@ interface PressureChartProps {
 export default function PressureChart({ data, title = 'Pressure (24h)' }: PressureChartProps) {
   const chartData = data.map(item => ({
     time: format(new Date(item.timestamp), 'HH:mm'),
-    pressure: item.pressure_kpa,
+    pressure: item.pressure,
   }));
 
   const CustomTooltip = ({ active, payload }: any) => {

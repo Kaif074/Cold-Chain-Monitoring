@@ -10,12 +10,12 @@ export interface TelemetryData {
   device_id: string;
   latitude: number;
   longitude: number;
-  speed_kmh: number;
+  speed: number;
   course_deg: number;
-  temperature_c: number;
-  humidity_percent: number;
-  pressure_kpa: number;
-  door_open: boolean;
+  temperature: number;
+  humidity: number;
+  pressure: number;
+  door_status: string;
 }
 
 export interface Alert {

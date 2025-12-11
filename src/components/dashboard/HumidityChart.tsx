@@ -11,7 +11,7 @@ interface HumidityChartProps {
 export default function HumidityChart({ data, title = 'Humidity (24h)' }: HumidityChartProps) {
   const chartData = data.map(item => ({
     time: format(new Date(item.timestamp), 'HH:mm'),
-    humidity: item.humidity_percent,
+    humidity: item.humidity,
   }));
 
   const CustomTooltip = ({ active, payload }: any) => {
