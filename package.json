@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 5173 --strictPort",
-    "lint": "tsgo -p tsconfig.check.json; npx biome lint; .rules/check.sh;npx tailwindcss -i ./src/index.css -o /dev/null 2>&1 | grep -E '^(CssSyntaxError|Error):.*' || true;.rules/testBuild.sh"
+    "lint": "npx tsgo -p tsconfig.check.json; npx biome lint; .rules/check.sh;npx tailwindcss -i ./src/index.css -o /dev/null 2>&1 | grep -E '^(CssSyntaxError|Error):.*' || true;.rules/testBuild.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -71,7 +71,9 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@ast-grep/napi": "^0.40.1",
     "@biomejs/biome": "2.3.4",
+    "@mxyhi/tsgo": "^2025.9.24-18",
     "@tailwindcss/container-queries": "^0.1.1",
     "@types/google.maps": "^3.58.1",
     "@types/lodash": "^4.17.20",
